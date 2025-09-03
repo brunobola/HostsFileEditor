@@ -41,8 +41,8 @@ dotnet build -c Release
 # Build and publish (creates deployable package)
 dotnet publish -c Release
 
-# Build with binary logging (recommended for troubleshooting)
-dotnet build -c Release -bl:logs/build-Release.binlog
+# Build and publish with binary logging (recommended for troubleshooting)
+dotnet publish -c Release -bl:logs/publish.binlog
 
 # Clean project build artifacts, bin directory, and logs directory
 dotnet clean

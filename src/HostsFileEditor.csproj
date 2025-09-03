@@ -72,16 +72,6 @@
     <RemoveDir Directories="$(MSBuildProjectDirectory)\obj" Condition="Exists('$(MSBuildProjectDirectory)\obj')" />
     <Message Text="Cleaned all build artifacts, bin directory, and logs directory" Importance="high" />
   </Target>
-  <Target Name="CopyFilesToBin" AfterTargets="Publish">
-    <ItemGroup Condition="'$(Configuration)' == 'Release'">
-      <PublishedFiles Include="$(PublishDir)**\*.*" Exclude="$(PublishDir)**\*.pdb" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-      <PublishedFiles Include="$(PublishDir)**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PublishedFiles)" DestinationFolder="$(MSBuildProjectDirectory)\..\bin" SkipUnchangedFiles="true" />
-    <Message Text="Copied @(PublishedFiles->Count()) files to bin directory" Importance="high" />
-  </Target>
   <!-- Change to AfterTargets to CopyNativeBinary if using Native AOT -->
   <Target Name="SignAndPackageAfterPublish" AfterTargets="Publish">
     <PropertyGroup>
@@ -98,5 +88,13 @@
     <Exec Command="signtool sign /fd SHA256 /a /f $(CertFile) /p $(CertPassword) &quot;$(MsixFile)&quot;" />
     <!-- Create a ZIP file of the published files -->
     <Exec Command="cd /d &quot;$(PublishDir)&quot; &amp;&amp; &quot;$(Pkg7ZipCLI)\tools\7za.exe&quot; a -tzip -aoa &quot;$(PublishZipFile)&quot; *.exe" />
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+      <PublishedFiles Include="$(PublishDir)**\*.*" Exclude="$(PublishDir)**\*.pdb" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+      <PublishedFiles Include="$(PublishDir)**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PublishedFiles)" DestinationFolder="$(MSBuildProjectDirectory)\..\bin" SkipUnchangedFiles="true" />
+    <Message Text="Copied @(PublishedFiles->Count()) files to bin directory" Importance="high" />
   </Target>
 </Project>
